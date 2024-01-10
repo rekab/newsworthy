@@ -25,11 +25,13 @@ MAX_NUM_HEADLINES = 30
 
 PROMPT_BASE = """I'm going to write a list of news headlines, and you need to score it according to the following criteria:
 
-POLITICAL: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being major political developments that affect a vast majority of the global population and will be talked about for decades.
-GLOBAL: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being significant global events that affect a vast majority of the global population and will be talked about for decades.
-SCIENCE AND TECHNOLOGY: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being groundbreaking scientific discoveries or technological advancements affect a vast majority of the global population and will be talked about for decades.
-ECONOMY: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being major economic shifts that affect a vast majority of the global population and will be talked about for decades.
-OVERALL: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being this will be mandatory lessons in schools all around the world in 100 years and people alive today remember where they were when they heard about these events and talk about it with their grandchildren?
+POLITICAL: Probability between 0.0 and 1.0 that these political developments will be taught to highschool-aged children three generations from now.
+GLOBAL: Probability between 0.0 and 1.0 that these global events will be taught to highschool-aged children three generations from now.
+SCIENCE AND TECHNOLOGY: Probability between 0.0 and 1.0 that these groundbreaking scientific discoveries or technological advancements will be taught to highschool-aged children three generations from now.
+ECONOMY: Probability between 0.0 and and 1.0 that these major economic shifts will be taught to highschool-aged children three generations from now.
+OVERALL: Probability between 0.0 and 1.0 will be mandatory lessons in schools all around the world in 100 years and people alive today remember where they were when they heard about these events and talk about it with their grandchildren?
+
+Be extremely judicious with high scores.
 
 Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
 
@@ -87,13 +89,23 @@ def request_chatgpt(prompt, max_tokens=200):
     """
 
     print('requesting gpt: ' + prompt)
-    response = client.completions.create(
-        model="gpt-3.5-turbo-instruct",
-        prompt=prompt,
-        max_tokens=max_tokens,
-        temperature=0.7)
+    #response = client.completions.create(
+    #    model="gpt-3.5-turbo-instruct",
+    #    prompt=prompt,
+    #    max_tokens=max_tokens,
+    #    temperature=0.7)
 
-    return response.choices[0].text.strip()
+    #return response.choices[0].text.strip()
+    completion = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            },
+        ],
+    )
+    return completion.choices[0].message.content
 
 
 def create_fifo():
