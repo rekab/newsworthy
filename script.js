@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => {
             console.error('Error fetching the news data:', error);
             const container = document.getElementById('container');
-            container.innerHTML = '<p>Error loading news data.</p>';
+            container.innerHTML = '<p>Error loading news data: ' + error + '</p>';
         });
 });
 
