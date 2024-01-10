@@ -1,6 +1,7 @@
 import bs4
 import errno
 import functools
+import itertools
 import json
 import demjson
 import multiprocessing
@@ -20,21 +21,25 @@ api_key = os.environ.get('API_KEY')
 client = openai.OpenAI(api_key=api_key)
 
 MAX_TOKENS = 3000
+MAX_NUM_HEADLINES = 30
 
 PROMPT_BASE = """I'm going to write a list of news headlines, and you need to score it according to the following criteria:
 
-POLITICAL: Scale 0.0 to 1.0: Major political developments, such as a world leader's death, significant political upheaval, or high-profile trials of political figures.
-GLOBAL: Scale 0.0 to 1.0: Significant global events, like breakthroughs in international agreements, major acts of terrorism, or significant natural disasters affecting large populations.
-SCIENCE AND TECHNOLOGY: Scale 0.0 to 1.0: Groundbreaking scientific discoveries or technological advancements with far-reaching implications.
-ECONOMY: Scale 0.0 to 1.0: Major economic shifts, like stock market crashes, significant mergers, or global economic policy changes.
-OVERALL: Scale 0.0 to 1.0
+POLITICAL: Scale 0.0 to 1.0: Major political developments, such as a world leader's death, significant political upheaval, or high-profile trials of political figures, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
+GLOBAL: Scale 0.0 to 1.0: Significant global events, like breakthroughs in international agreements, major acts of terrorism, or significant natural disasters affecting large populations, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
+SCIENCE AND TECHNOLOGY: Scale 0.0 to 1.0: Groundbreaking scientific discoveries or technological advancements with far-reaching implications, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
+ECONOMY: Scale 0.0 to 1.0: Major economic shifts, like stock market crashes, significant mergers, or global economic policy changes, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
+OVERALL: scale 0.0 to 1.0
 
-Reply as a JSON dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON.
+Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
 
 The headlines are:
 
 """
 
+FIX_JSON_PROMPT = """Extract the JSON text from this text. DO NOT respond with anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
+
+"""
 
 def read_new_news():
     print('reading NEW news')
@@ -46,11 +51,11 @@ def read_new_news():
 
 def read_old_news():
     print('reading old news')
-    with open('curl-news-snapshot.2024-01-07.html', 'r') as f:
+    with open('68k.html', 'r') as f:
         return f.read()
 
 
-def extract_headlines(html_content):
+def extract_google_news_headlines(html_content):
     soup = bs4.BeautifulSoup(html_content, 'html.parser')
 
     articles = []
@@ -58,6 +63,16 @@ def extract_headlines(html_content):
         href = link.get('href')
         if href is not None and href.startswith('./articles/') and link.text != '':
             articles.append(link.text)
+
+    return articles
+
+
+def extract_68k_news_headlines(html_content):
+    soup = bs4.BeautifulSoup(html_content, 'html.parser')
+
+    articles = []
+    for headline in itertools.islice(soup.find_all('h3'), MAX_NUM_HEADLINES):
+        articles.append(headline.text)
 
     return articles
 
@@ -166,10 +181,21 @@ def headline_refresher():
                 continue
 
             with open("new.news.json", "w") as h_json:
-                headlines = '\n'.join(extract_headlines(read_new_news()))
+                headlines = '\n'.join(extract_68k_news_headlines(read_old_news()))
                 print(headlines)
                 prompt = PROMPT_BASE + headlines
                 gpt_json = request_chatgpt(prompt, MAX_TOKENS)
+                # Sometimes Cat, I Farted returns a bit more than JSON, so we
+                # have to Attempt to parse the json, and use chatgpt to fix it
+                try:
+                    print('attempting to parse json')
+                    demjson.decode(gpt_json)
+                    print('json is good')
+                except demjson.JSONDecodeError as e:
+                    print('attempting to fix json')
+                    prompt = FIX_JSON_PROMPT + gpt_json
+                    gpt_json = request_chatgpt(prompt, MAX_TOKENS)
+                    print('fixed? ' + gpt_json)
                 h_json.write(gpt_json)
                 pprint.pprint(gpt_json)
 
@@ -178,6 +204,8 @@ def headline_refresher():
 
 
 def main():
+    #print('\n'.join(extract_68k_news_headlines(read_old_news())))
+
     create_fifo()
 
     # Create server and headline_refresher processes
