@@ -25,11 +25,11 @@ MAX_NUM_HEADLINES = 30
 
 PROMPT_BASE = """I'm going to write a list of news headlines, and you need to score it according to the following criteria:
 
-POLITICAL: Scale 0.0 to 1.0: Major political developments, such as a world leader's death, significant political upheaval, or high-profile trials of political figures, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
-GLOBAL: Scale 0.0 to 1.0: Significant global events, like breakthroughs in international agreements, major acts of terrorism, or significant natural disasters affecting large populations, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
-SCIENCE AND TECHNOLOGY: Scale 0.0 to 1.0: Groundbreaking scientific discoveries or technological advancements with far-reaching implications, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
-ECONOMY: Scale 0.0 to 1.0: Major economic shifts, like stock market crashes, significant mergers, or global economic policy changes, that everyone will talk about for years and if you're ignorant of it people will otstracize you.
-OVERALL: scale 0.0 to 1.0
+POLITICAL: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being major political developments that affect a vast majority of the global population and will be talked about for decades.
+GLOBAL: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being significant global events that affect a vast majority of the global population and will be talked about for decades.
+SCIENCE AND TECHNOLOGY: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being groundbreaking scientific discoveries or technological advancements affect a vast majority of the global population and will be talked about for decades.
+ECONOMY: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being major economic shifts that affect a vast majority of the global population and will be talked about for decades.
+OVERALL: Scale 0.0 to 1.0: 0.0 being unimportant and 1.0 being this will be mandatory lessons in schools all around the world in 100 years and people alive today remember where they were when they heard about these events and talk about it with their grandchildren?
 
 Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
 
