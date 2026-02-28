@@ -28,21 +28,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 let vibeLabel;
                 if (pct < 15) {
-                    vibeLabel = 'nothing to see here';
+                    vibeLabel = 'quiet day in the waiting room';
                 } else if (pct < 30) {
-                    vibeLabel = 'slow news day';
+                    vibeLabel = 'routine anxiety, nothing unusual';
                 } else if (pct < 45) {
-                    vibeLabel = 'worth a skim';
+                    vibeLabel = 'stock up on tissues';
                 } else if (pct < 55) {
-                    vibeLabel = 'maybe start paying attention';
+                    vibeLabel = 'your clients definitely noticed';
                 } else if (pct < 65) {
-                    vibeLabel = 'this is getting interesting';
+                    vibeLabel = 'cancel your lunch break';
                 } else if (pct < 75) {
-                    vibeLabel = 'buckle up';
+                    vibeLabel = 'double-book the Kleenex';
                 } else if (pct < 88) {
-                    vibeLabel = 'history is happening';
+                    vibeLabel = 'everyone is bringing this up';
                 } else {
-                    vibeLabel = 'call your mom';
+                    vibeLabel = 'therapists need therapists';
                 }
 
                 let underwearMsg;
@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 summary.innerHTML = `
                     <div class="summary-headline"><span class="summary-pct">${pct}%</span><span class="summary-vibe">${vibeLabel}</span></div>
+                    <div class="summary-label">chance of tears in tomorrow's sessions</div>
                     <div class="summary-description">${OVERALL[1]}</div>
                     <div class="${underwearClass}">${underwearMsg}</div>
                 `;
@@ -71,11 +72,19 @@ document.addEventListener("DOMContentLoaded", function() {
             }).sort((a, b) => b.score - a.score);
 
             sortedData.forEach(item => {
-                const tile = document.createElement('div');
-                tile.className = 'tile';
-                tile.style.backgroundColor = scoreToColor(item.score);
-                tile.innerHTML = `<h2>${item.category}</h2><p>${Math.round(item.score * 100)}% chance this makes history class in 10 years<br>${item.description}</p>`;
-                container.appendChild(tile);
+                if (item.score > 0.4) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.style.backgroundColor = scoreToColor(item.score);
+                    tile.innerHTML = `<h2>${item.category}</h2><p>${Math.round(item.score * 100)}% chance of tears tomorrow<br>${item.description}</p>`;
+                    container.appendChild(tile);
+                } else {
+                    const tile = document.createElement('details');
+                    tile.className = 'tile tile-collapsed';
+                    tile.style.borderLeftColor = scoreToColor(item.score);
+                    tile.innerHTML = `<summary><span class="tile-name">${item.category}</span><span class="tile-pct">${Math.round(item.score * 100)}%</span></summary><p>${item.description}</p>`;
+                    container.appendChild(tile);
+                }
             });
         })
         .catch(error => {

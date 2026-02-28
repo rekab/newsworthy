@@ -39,6 +39,14 @@ body {
     opacity: 0.75;
 }
 
+.summary-label {
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.55;
+    margin-bottom: 14px;
+}
+
 .summary-description {
     font-size: 1.1em;
     line-height: 1.4;
@@ -82,6 +90,58 @@ body {
     padding: 16px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     overflow: hidden;
+}
+
+.tile-collapsed {
+    background-color: transparent;
+    border: none;
+    border-left: 4px solid #ccc;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 10px 14px;
+    grid-column: 1 / -1;
+    opacity: 0.6;
+}
+
+.tile-collapsed summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.tile-collapsed summary::-webkit-details-marker {
+    display: none;
+}
+
+.tile-collapsed summary::before {
+    content: '▸';
+    font-size: 0.75em;
+    transition: transform 0.15s;
+}
+
+.tile-collapsed[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.tile-name {
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tile-pct {
+    font-size: 0.75em;
+    opacity: 0.6;
+}
+
+.tile-collapsed p {
+    margin: 8px 0 0 18px;
+    font-size: 0.85em;
+    line-height: 1.4;
 }
 
 .tile h2 {

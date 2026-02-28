@@ -23,24 +23,24 @@ client = openai.OpenAI(api_key=api_key)
 MAX_TOKENS = 3000
 MAX_NUM_HEADLINES = 30
 
-PROMPT_BASE = """I'm going to write a list of news headlines, and you need to score it according to the following criteria:
+PROMPT_BASE = """I'm going to write a list of news headlines. Score each category by the probability that a psychologist will have clients in tears about these headlines during their next session. Then, in the summary string, briefly explain what specifically is likely to stress out, concern, or alarm people about these headlines — and why it's getting under their skin.
 
-POLITICAL: Probability between 0.0 and 1.0 that these political developments will be taught to highschool-aged children ten years from now.
-GLOBAL: Probability between 0.0 and 1.0 that these global events will be taught to highschool-aged children ten years from now.
-WAR / CONFLICT: Probability between 0.0 and 1.0 that these military conflicts or acts of political violence will be taught to highschool-aged children ten years from now.
-SCIENCE AND TECHNOLOGY: Probability between 0.0 and 1.0 that these groundbreaking scientific discoveries or technological advancements will be taught to highschool-aged children ten years from now.
-ECONOMY: Probability between 0.0 and 1.0 that these major economic shifts will be taught to highschool-aged children ten years from now.
-SPORTS AND ENTERTAINMENT: Probability between 0.0 and 1.0 that these sports or entertainment events will be considered historically significant and taught to highschool-aged children ten years from now.
-OVERALL: Probability between 0.0 and 1.0 that this news cycle will be considered historically significant and taught in schools all around the world in 10 years.
+POLITICAL: Probability between 0.0 and 1.0 that a psychologist will have clients crying about these political headlines in their next session.
+GLOBAL: Probability between 0.0 and 1.0 that a psychologist will have clients crying about these global events in their next session.
+WAR / CONFLICT: Probability between 0.0 and 1.0 that a psychologist will have clients crying about these conflicts or acts of violence in their next session.
+SCIENCE AND TECHNOLOGY: Probability between 0.0 and 1.0 that a psychologist will have clients crying about these science and technology headlines in their next session.
+ECONOMY: Probability between 0.0 and 1.0 that a psychologist will have clients crying about these economic headlines in their next session.
+SPORTS AND ENTERTAINMENT: Probability between 0.0 and 1.0 that a psychologist will have clients crying about these sports and entertainment headlines in their next session.
+OVERALL: Probability between 0.0 and 1.0 that a psychologist will have clients crying about today's overall news cycle in their next session.
 
-Be extremely judicious with high scores.
+Be extremely judicious with high scores. Only score categories above 0.4 if there is genuinely alarming content.
 
-Write each summary with wit, editorial flair, and a healthy dose of snark — as if you're a cynical but brilliant journalist who has seen it all.
+Write each summary as a concise, direct explanation of what's freaking people out and why — not reassurance, not therapy-speak. Be specific about the threat or source of anxiety. Use wit and a touch of snark.
 
-Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARIZING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
+Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING explaining what's alarming or stressful about these headlines. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
 
 Example of a valid response:
-{"POLITICAL": [0.12, "Politicians argue about things voters will forget by Tuesday."], "GLOBAL": [0.05, "The world continues to spin, largely indifferent."], "WAR / CONFLICT": [0.0, "No active shooting wars in the headlines today — enjoy it."], "SCIENCE AND TECHNOLOGY": [0.42, "A genuinely interesting chip announcement that might actually matter."], "ECONOMY": [0.08, "Markets wobbled. Analysts were paid to explain why."], "SPORTS AND ENTERTAINMENT": [0.02, "A celebrity did something. The internet cared briefly."], "OVERALL": [0.15, "A perfectly average news day — nothing that will make the history books."]}
+{"POLITICAL": [0.12, "The usual partisan noise. Nothing that will change anyone's actual life, but everyone will act like it might."], "GLOBAL": [0.05, "Low-grade geopolitical friction with no imminent escalation. Background hum, not a crisis."], "WAR / CONFLICT": [0.0, "Nothing notable. Rare."], "SCIENCE AND TECHNOLOGY": [0.45, "A major AI capability jump is making people question job security and the nature of creative work. The concern is legitimate."], "ECONOMY": [0.08, "Markets did their normal thing. Nothing that should ruin anyone's week."], "SPORTS AND ENTERTAINMENT": [0.02, "A celebrity scandal. Culturally noisy, personally irrelevant to almost everyone."], "OVERALL": [0.15, "A low-stakes news day. The volume is high but the actual threat level is minimal."]}
 
 The headlines are:
 
