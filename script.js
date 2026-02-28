@@ -15,21 +15,54 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             const container = document.getElementById('container');
 
-            // Set background color based on the OVERALL score
-            if (data.OVERALL) {
-                document.body.style.backgroundColor = scoreToColor(data.OVERALL[0]);
-            }
-
             // Separate the OVERALL category
             const { OVERALL, ...otherCategories } = data;
 
-            // Display the OVERALL category
+            // Populate summary banner with OVERALL info
+            const summary = document.getElementById('summary');
             if (OVERALL) {
-                const overallTile = document.createElement('div');
-                overallTile.className = 'tile';
-                overallTile.style.backgroundColor = scoreToColor(OVERALL[0]);
-                overallTile.innerHTML = `<h2>OVERALL</h2><p>Score: ${OVERALL[0]}<br>${OVERALL[1]}</p>`;
-                container.appendChild(overallTile);
+                const score = OVERALL[0];
+                const pct = Math.round(score * 100);
+                document.body.style.backgroundColor = scoreToColor(score);
+                summary.style.borderBottomColor = scoreToColor(score);
+
+                let vibeLabel;
+                if (pct < 15) {
+                    vibeLabel = 'nothing to see here';
+                } else if (pct < 30) {
+                    vibeLabel = 'slow news day';
+                } else if (pct < 45) {
+                    vibeLabel = 'worth a skim';
+                } else if (pct < 55) {
+                    vibeLabel = 'maybe start paying attention';
+                } else if (pct < 65) {
+                    vibeLabel = 'this is getting interesting';
+                } else if (pct < 75) {
+                    vibeLabel = 'buckle up';
+                } else if (pct < 88) {
+                    vibeLabel = 'history is happening';
+                } else {
+                    vibeLabel = 'call your mom';
+                }
+
+                let underwearMsg;
+                let underwearClass;
+                if (score < 0.4) {
+                    underwearMsg = 'Underwear status: nominal.';
+                    underwearClass = 'underwear underwear-nominal';
+                } else if (score <= 0.7) {
+                    underwearMsg = 'Consider clean underwear.';
+                    underwearClass = 'underwear underwear-advisory';
+                } else {
+                    underwearMsg = 'PUT ON CLEAN UNDERWEAR.';
+                    underwearClass = 'underwear underwear-urgent';
+                }
+
+                summary.innerHTML = `
+                    <div class="summary-headline"><span class="summary-pct">${pct}%</span><span class="summary-vibe">${vibeLabel}</span></div>
+                    <div class="summary-description">${OVERALL[1]}</div>
+                    <div class="${underwearClass}">${underwearMsg}</div>
+                `;
             }
 
             // Sort and display other categories
@@ -41,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const tile = document.createElement('div');
                 tile.className = 'tile';
                 tile.style.backgroundColor = scoreToColor(item.score);
-                tile.innerHTML = `<h2>${item.category}</h2><p>Score: ${item.score}<br>${item.description}</p>`;
+                tile.innerHTML = `<h2>${item.category}</h2><p>${Math.round(item.score * 100)}% chance this makes history class in 10 years<br>${item.description}</p>`;
                 container.appendChild(tile);
             });
         })

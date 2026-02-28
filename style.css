@@ -1,17 +1,77 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+#summary {
+    width: 100%;
+    padding: 24px 20px 20px;
+    border-bottom: 4px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.summary-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.summary-pct {
+    font-size: 3.5em;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.summary-vibe {
+    font-size: 1.2em;
+    font-weight: bold;
+    opacity: 0.75;
+}
+
+.summary-description {
+    font-size: 1.1em;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    max-width: 700px;
+}
+
+.underwear {
+    font-family: monospace;
+    font-size: 0.9em;
+    letter-spacing: 0.08em;
+}
+
+.underwear-nominal {
+    opacity: 0.5;
+}
+
+.underwear-advisory {
+    font-weight: bold;
+}
+
+.underwear-urgent {
+    font-weight: bold;
+    font-size: 1em;
+    text-transform: uppercase;
 }
 
 #container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    width: 100%;
     max-width: 1000px;
 }
 
@@ -19,17 +79,41 @@ body {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     overflow: hidden;
 }
 
 .tile h2 {
-    font-size: 1.2em;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-top: 0;
+    margin-bottom: 8px;
 }
 
 .tile p {
     font-size: 0.9em;
+    margin: 0;
+    line-height: 1.4;
 }
 
+@media (max-width: 600px) {
+    .summary-pct {
+        font-size: 2.8em;
+    }
+
+    .summary-vibe {
+        font-size: 1em;
+    }
+
+    .summary-description {
+        font-size: 1em;
+    }
+
+    #container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 12px;
+    }
+}
