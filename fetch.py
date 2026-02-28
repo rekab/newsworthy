@@ -27,13 +27,20 @@ PROMPT_BASE = """I'm going to write a list of news headlines, and you need to sc
 
 POLITICAL: Probability between 0.0 and 1.0 that these political developments will be taught to highschool-aged children ten years from now.
 GLOBAL: Probability between 0.0 and 1.0 that these global events will be taught to highschool-aged children ten years from now.
+WAR / CONFLICT: Probability between 0.0 and 1.0 that these military conflicts or acts of political violence will be taught to highschool-aged children ten years from now.
 SCIENCE AND TECHNOLOGY: Probability between 0.0 and 1.0 that these groundbreaking scientific discoveries or technological advancements will be taught to highschool-aged children ten years from now.
-ECONOMY: Probability between 0.0 and and 1.0 that these major economic shifts will be taught to highschool-aged children ten years from now.
-OVERALL: Probability between 0.0 and 1.0 will be mandatory lessons in schools all around the world in 10 years.
+ECONOMY: Probability between 0.0 and 1.0 that these major economic shifts will be taught to highschool-aged children ten years from now.
+SPORTS AND ENTERTAINMENT: Probability between 0.0 and 1.0 that these sports or entertainment events will be considered historically significant and taught to highschool-aged children ten years from now.
+OVERALL: Probability between 0.0 and 1.0 that this news cycle will be considered historically significant and taught in schools all around the world in 10 years.
 
 Be extremely judicious with high scores.
 
-Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
+Write each summary with wit, editorial flair, and a healthy dose of snark — as if you're a cynical but brilliant journalist who has seen it all.
+
+Reply ONLY WITH A VALID JSON. The JSON is a dictionary, keyed by category with array values, consisting of a floating point score AND A SHORT STRING SUMMARIZING THE HEADLINES with an EXPLANATION WHY you chose that value. ONLY reply using JSON. DO NOT include anything other than JSON. Your response will be interpreted as JSON so DO NOT REPLY WITH ANYTHING OTHER THAN VALID JSON.
+
+Example of a valid response:
+{"POLITICAL": [0.12, "Politicians argue about things voters will forget by Tuesday."], "GLOBAL": [0.05, "The world continues to spin, largely indifferent."], "WAR / CONFLICT": [0.0, "No active shooting wars in the headlines today — enjoy it."], "SCIENCE AND TECHNOLOGY": [0.42, "A genuinely interesting chip announcement that might actually matter."], "ECONOMY": [0.08, "Markets wobbled. Analysts were paid to explain why."], "SPORTS AND ENTERTAINMENT": [0.02, "A celebrity did something. The internet cared briefly."], "OVERALL": [0.15, "A perfectly average news day — nothing that will make the history books."]}
 
 The headlines are:
 
