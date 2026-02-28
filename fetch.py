@@ -116,7 +116,10 @@ def create_fifo():
 
 
 def is_file_old(fname, max_age=300):
-    return time.time() - os.stat("news.json").st_mtime > max_age
+    try:
+        return time.time() - os.stat(fname).st_mtime > max_age
+    except FileNotFoundError:
+        return True
 
 
 def get_headlines_json():
@@ -133,9 +136,12 @@ def get_headlines_json():
                 raise
 
     # Read and return the contents of the file
-    with open("news.json", 'r') as file:
-        json_str = file.read()
-        return json.loads(json_str)
+    try:
+        with open("news.json", 'r') as file:
+            json_str = file.read()
+            return json.loads(json_str)
+    except FileNotFoundError:
+        return {}
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
